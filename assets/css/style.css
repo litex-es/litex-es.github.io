@@ -1,0 +1,395 @@
+/* =========================================================================
+   litex.es — sistema de diseño
+   Editorial, sobrio, papel. Paleta tomada de la cubierta de
+   «El pueblo que vuelve en agosto».
+   ========================================================================= */
+
+/* --- 1. Tokens ---------------------------------------------------------- */
+
+:root {
+  /* Color */
+  --paper:        #F7F2E8;   /* fondo general, papel ahuesado           */
+  --paper-warm:   #EFE5D4;   /* paneles cálidos                          */
+  --paper-cover:  #EEE1D0;   /* crema exacto de la cubierta              */
+  --ink:          #171A16;   /* carbón oscuro — texto principal          */
+  --ink-soft:     #4B4439;   /* carbón medio — texto secundario          */
+  --ink-mute:     #6A6255;   /* metadatos, pies de foto — AA (≥4,67:1)
+                                sobre los tres fondos claros del sitio    */
+  --sanguina:     #8A4B32;   /* acento principal                         */
+  --sanguina-dk:  #6E3A26;   /* acento en hover / contraste AA           */
+  --stone:        #806A50;
+  --rule:         rgba(23, 26, 22, .16);
+  --rule-soft:    rgba(23, 26, 22, .09);
+
+  /* Tipografía */
+  --serif:   'EB Garamond', 'Iowan Old Style', Palatino, 'Palatino Linotype', Georgia, serif;
+  --display: 'Playfair Display', 'EB Garamond', Georgia, serif;
+  --sans:    'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* Escala fluida */
+  --t-xs:  .75rem;
+  --t-sm:  .875rem;
+  --t-base: clamp(1.0625rem, .99rem + .32vw, 1.1875rem);
+  --t-lede: clamp(1.1875rem, 1.09rem + .45vw, 1.4375rem);
+  --t-h3:  clamp(1.25rem, 1.15rem + .5vw, 1.5rem);
+  --t-h2:  clamp(1.6rem, 1.3rem + 1.35vw, 2.5rem);
+  --t-h1:  clamp(2.1rem, 1.5rem + 2.7vw, 4rem);
+  --t-xl:  clamp(2.6rem, 1.6rem + 4.4vw, 5.5rem);
+
+  /* Ritmo */
+  --gap:      clamp(1.5rem, 1rem + 2vw, 3rem);
+  --section:  clamp(4rem, 2.5rem + 6vw, 8.5rem);
+  --wrap:     72rem;
+  --measure:  34rem;   /* ancho de lectura cómodo */
+}
+
+/* --- 2. Reset y base ---------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: var(--t-base);
+  line-height: 1.66;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg { max-width: 100%; height: auto; display: block; }
+
+h1, h2, h3, h4 {
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -.012em;
+  text-wrap: balance;
+  margin: 0 0 .6em;
+}
+
+h1 { font-size: var(--t-h1); }
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); line-height: 1.25; }
+
+p { margin: 0 0 1.15em; text-wrap: pretty; }
+p:last-child { margin-bottom: 0; }
+
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+a:hover { color: var(--sanguina); }
+
+strong { font-weight: 600; }
+em { font-style: italic; }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: var(--gap) 0;
+}
+
+::selection { background: var(--sanguina); color: var(--paper); }
+
+:focus-visible {
+  outline: 2px solid var(--sanguina);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: absolute; left: -9999px;
+  background: var(--ink); color: var(--paper);
+  padding: .7rem 1.1rem; z-index: 100;
+  font-family: var(--sans); font-size: var(--t-sm);
+}
+.skip-link:focus { left: 1rem; top: 1rem; }
+
+/* --- 3. Layout ---------------------------------------------------------- */
+
+.wrap {
+  width: min(100% - 2.5rem, var(--wrap));
+  margin-inline: auto;
+}
+.wrap--narrow { width: min(100% - 2.5rem, 46rem); }
+
+.section { padding-block: var(--section); }
+
+/* Dos secciones lisas seguidas comparten aire: se colapsa el margen superior de
+   la segunda. Pero si alguna de las dos lleva filete o fondo propio, la banda
+   necesita su propio aire arriba, así que la regla no debe aplicarse. */
+.section:not(.section--warm):not(.section--dark)
+  + .section:not(.section--rule):not(.section--warm):not(.section--dark) {
+  padding-top: 0;
+}
+
+.section--rule { border-top: 1px solid var(--rule-soft); padding-top: var(--section); }
+.section--warm { background: var(--paper-warm); }
+.section--dark { background: var(--ink); color: var(--paper); }
+.section--dark a:hover { color: #D9A385; }
+
+.measure { max-width: var(--measure); }
+
+/* --- 4. Tipografía de apoyo --------------------------------------------- */
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--sanguina);
+  margin: 0 0 1.4rem;
+  display: block;
+}
+.section--dark .eyebrow { color: #C08A6B; }
+
+.lede {
+  font-size: var(--t-lede);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 38rem;
+}
+
+.meta {
+  font-family: var(--sans);
+  font-size: var(--t-sm);
+  letter-spacing: .02em;
+  color: var(--ink-mute);
+  line-height: 1.55;
+}
+
+.display-xl {
+  font-family: var(--display);
+  font-size: var(--t-xl);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -.022em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.quiet { color: var(--ink-soft); }
+.accent { color: var(--sanguina); }
+.italic { font-style: italic; }
+
+/* Ornamento: filete corto centrado o a la izquierda */
+.flourish {
+  width: 3.5rem;
+  height: 1px;
+  background: var(--sanguina);
+  border: 0;
+  margin: 2rem 0;
+  opacity: .7;
+}
+.flourish--center { margin-inline: auto; }
+
+/* --- 5. Botones --------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  font-family: var(--sans);
+  font-size: var(--t-sm);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: .95rem 1.7rem;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .25s ease, color .25s ease, border-color .25s ease;
+}
+.btn:hover { background: var(--ink); color: var(--paper); }
+
+.btn--solid { background: var(--ink); color: var(--paper); }
+.btn--solid:hover { background: var(--sanguina); border-color: var(--sanguina); color: var(--paper); }
+
+.btn--accent { background: var(--sanguina); border-color: var(--sanguina); color: var(--paper); }
+.btn--accent:hover { background: var(--sanguina-dk); border-color: var(--sanguina-dk); color: var(--paper); }
+
+.btn[aria-disabled="true"] {
+  border-color: var(--rule);
+  color: var(--ink-mute);
+  cursor: default;
+  pointer-events: none;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .85rem;
+  margin-top: 2rem;
+}
+
+/* Enlace con subrayado animado */
+.link {
+  font-family: var(--sans);
+  font-size: var(--t-sm);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: .25rem;
+  transition: border-color .25s ease, color .25s ease;
+}
+.link:hover { color: var(--sanguina); border-color: var(--sanguina); }
+
+/* --- 6. Cabecera y navegación ------------------------------------------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: saturate(150%) blur(10px);
+  -webkit-backdrop-filter: saturate(150%) blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s ease, background .3s ease;
+}
+.site-header.is-stuck { border-bottom-color: var(--rule-soft); }
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding-block: 1.15rem;
+}
+
+.brand { display: inline-block; line-height: 0; }
+.brand img { width: clamp(6.5rem, 5rem + 4vw, 8.75rem); }
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, .5rem + 2vw, 2.5rem);
+  font-family: var(--sans);
+  font-size: var(--t-xs);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+.nav a {
+  text-decoration: none;
+  color: var(--ink-soft);
+  padding-block: .35rem;
+  border-bottom: 1px solid transparent;
+  transition: color .2s ease, border-color .2s ease;
+  white-space: nowrap;
+}
+.nav a:hover { color: var(--ink); border-bottom-color: var(--sanguina); }
+/* La entrada que nombra a la propia asociación conserva su minúscula: el
+   nombre es «litex.es», no «LITEX.ES». Un pelo más de cuerpo para que no
+   quede pequeña al lado de las versalitas. */
+.nav .nav__self {
+  text-transform: none;
+  letter-spacing: .02em;
+  font-size: .8125rem;
+}
+
+/* "page" marca la página exacta; "true", la sección a la que pertenece la
+   página actual (la ficha de un libro se sitúa bajo «Libros»). */
+.nav a[aria-current="page"],
+.nav a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+
+/* La cabecera no lleva menú desplegable: los cuatro enlaces no caben junto al
+   logotipo por debajo de ~700 px. Ahí la navegación baja a su propia línea. */
+@media (max-width: 44rem) {
+  .site-header__inner {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .85rem 1rem;
+    padding-block: .9rem;
+  }
+  .nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: .4rem .75rem;
+    font-size: .6875rem;
+    letter-spacing: .06em;
+  }
+}
+
+/* --- 7. Pie de página --------------------------------------------------- */
+
+.site-footer {
+  background: var(--ink);
+  color: #C9C2B4;
+  padding-block: clamp(3rem, 2rem + 4vw, 5rem);
+  font-size: var(--t-sm);
+}
+.site-footer a { color: var(--paper); text-decoration: none; border-bottom: 1px solid rgba(247,242,232,.28); }
+.site-footer a:hover { color: #D9A385; border-color: #D9A385; }
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--gap);
+  align-items: start;
+}
+.site-footer__brand img { width: 8.5rem; margin-bottom: 1.25rem; }
+.site-footer h3 {
+  font-family: var(--sans);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--paper);
+  margin-bottom: .9rem;
+}
+.site-footer__bottom {
+  margin-top: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(247,242,232,.14);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1.5rem;
+  justify-content: space-between;
+  font-size: var(--t-xs);
+  color: #8F887B;
+  letter-spacing: .02em;
+}
+
+/* --- 8. Animación de entrada -------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition: opacity .8s cubic-bezier(.22,.61,.36,1), transform .8s cubic-bezier(.22,.61,.36,1);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* --- 9. Utilidades ------------------------------------------------------ */
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.center { text-align: center; }
+.center .lede, .center .measure { margin-inline: auto; }
+
+@media print {
+  .site-header, .btn-row, .reveal { position: static; opacity: 1; transform: none; }
+  body { background: #fff; color: #000; }
+}
